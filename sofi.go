@@ -30,6 +30,7 @@ func main() {
 	mux.HandleFunc("/random", makeHandler(randomHandler, s))
 	mux.HandleFunc("/tag", makeHandler(tagIndexHandler, s))
 	mux.HandleFunc("/tag/{tag}", makeHandler(tagHandler, s))
+	mux.HandleFunc("/feeds/newest", makeHandler(feedHandler, s))
 	mux.HandleFunc("/favicon.ico", faviconHandler)
 	http.ListenAndServe(":"+port, mux)
 }

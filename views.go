@@ -117,6 +117,20 @@ func tagIndexHandler(w http.ResponseWriter, r *http.Request, s *site) {
 	tmpl.Execute(w, tir)
 }
 
+type feedResponse struct {
+	Images []Image
+}
+
+func feedHandler(w http.ResponseWriter, r *http.Request, s *site) {
+	pagen := 1
+	ir := feedResponse{}
+	images := newest_images(s.DB, pagen)
+	ir.Images = images
+	var t = template.New("feed.html")
+	tmpl := template.Must(t.ParseFiles(filepath.Join(templateDir, "feed.html")))
+	w.Header().Set("Content-Type", "application/rss+xml")
+	tmpl.Execute(w, ir)
+}
 func faviconHandler(w http.ResponseWriter, r *http.Request) {
 	// just ignore this crap
 }
