@@ -1,12 +1,60 @@
 <html>
     <head>
         <title>{{ template "title" .}}</title>
+        <style>
+         nav ul {
+             list-style: none;
+             margin: 0;
+             padding: 0;
+             display: flex;
+             justify-content: space-around;
+             background-color: #f0f0f0;
+             padding: 10px;
+         }
+
+         nav li {
+             margin: 0 10px; /* Add some space between items */
+         }
+
+         nav a {
+             text-decoration: none; /* Remove underlines */
+             color: #333; /* Dark grey text */
+             font-weight: bold;
+         }
+
+         nav a:hover {
+             color: #007bff; /* Blue on hover */
+         }
+         a {
+             text-decoration: none; /* Remove underlines */
+             color: #333; /* Dark grey text */
+             font-weight: bold;
+         }
+
+         a:hover {
+             color: #007bff; /* Blue on hover */
+         }
+
+         a.tag {
+             text-decoration: none;
+             color: #333;
+             font-weight: bold;
+             background-color: #f0f0f0;
+             padding: 5px;
+             display: inline-block;
+         }
+
+         a.tag:hover {
+             color: #fff; 
+             background-color: #007bff;
+         }
+        </style>
     </head>
     <body>
         <header><section class="container">
             <nav>
                 <ul>
-                    <li><a href="/">/</a></li>
+                    <li><a href="/">Pixelvore</a></li>
                     <li><a href="/tag">tags</a></li>
                     <li><a href="/random">random</a></li>
                 </ul>

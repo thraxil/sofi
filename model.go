@@ -53,3 +53,15 @@ func getAllTags(db *sqlx.DB) []Tag {
 	db.Select(&tags, "SELECT * FROM tags order by lower(tag)")
 	return tags
 }
+
+func get_tag_by_slug(db *sqlx.DB, slug string) Tag {
+	tag := Tag{}
+	db.Get(&tag, "SELECT * FROM tags WHERE slug=$1", slug)
+	return tag
+}
+
+func get_images_by_tag(db *sqlx.DB, tag Tag) []Image {
+	images := []Image{}
+	db.Select(&images, "SELECT images.* FROM images JOIN image_tags ON images.id=image_tags.image_id WHERE image_tags.tag_id=$1", tag.Id)
+	return images
+}

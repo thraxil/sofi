@@ -8,15 +8,20 @@
 </div>
 {{ end }}
 
-{{ if .HasPrevPage }}
-<div class="pagination">
-    <a href="/?page={{.PrevPage}}">Prev</a>
-</div>
-{{ end }}
-{{.Page}} / {{.TotalPages}}
-{{ if .HasNextPage }}
-<div class="pagination">
-    <a href="/?page={{.NextPage}}">Next</a>
-</div>
-{{ end }}
+<nav>
+    <ul>
+        {{ if .HasPrevPage }}
+        <li>
+            <a href="/?page={{.PrevPage}}">&lt;&lt; Prev</a>
+        </li>
+        {{ else }}
+        <li>&lt;&lt; Prev</li>
+        {{ end }}
+        <li>{{.Page}} / {{.TotalPages}}</li>
+        {{ if .HasNextPage }}
+        <li>
+            <a href="/?page={{.NextPage}}">Next &gt;&gt;</a>
+        </li>
+        {{ end }}
+    </ul>
 {{ end }}

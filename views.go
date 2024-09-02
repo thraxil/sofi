@@ -38,6 +38,8 @@ func indexHandler(w http.ResponseWriter, r *http.Request, s *site) {
 	has_prev_page := true
 	if pagen < 1 {
 		pagen = 1
+	}
+	if pagen < 2 {
 		has_prev_page = false
 	}
 	if pagen > cnt_images/imagesPerPage {
@@ -87,7 +89,20 @@ func imageHandler(w http.ResponseWriter, r *http.Request, s *site) {
 	tmpl.Execute(w, ir)
 }
 
+type tagResponse struct {
+	Tag    Tag
+	Images []Image
+}
+
 func tagHandler(w http.ResponseWriter, r *http.Request, s *site) {
+	slug := r.PathValue("tag")
+	tr := tagResponse{}
+	tag := get_tag_by_slug(s.DB, slug)
+	tr.Tag = tag
+	images := get_images_by_tag(s.DB, tag)
+	tr.Images = images
+	tmpl := getTemplate("tag.html")
+	tmpl.Execute(w, tr)
 }
 
 type tagIndexResponse struct {
