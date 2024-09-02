@@ -16,15 +16,42 @@ func makeHandler(fn func(http.ResponseWriter, *http.Request, *site), s *site) ht
 }
 
 type indexResponse struct {
-	Images []Image
-	Page   int
+	Images      []Image
+	Page        int
+	TotalPages  int
+	NextPage    int
+	HasNextPage bool
+	PrevPage    int
+	HasPrevPage bool
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request, s *site) {
+	imagesPerPage := 20
+	pagen, err := strconv.Atoi(r.FormValue("page"))
+	if err != nil {
+		// can't parse as int? just default to one
+		pagen = 1
+	}
 	ir := indexResponse{}
-	images := newest_images(s.DB, 1)
+	cnt_images := count_images(s.DB)
+	has_next_page := true
+	has_prev_page := true
+	if pagen < 1 {
+		pagen = 1
+		has_prev_page = false
+	}
+	if pagen > cnt_images/imagesPerPage {
+		pagen = cnt_images / imagesPerPage
+		has_next_page = false
+	}
+	images := newest_images(s.DB, pagen)
 	ir.Images = images
-	ir.Page = 1
+	ir.Page = pagen
+	ir.TotalPages = cnt_images / imagesPerPage
+	ir.NextPage = pagen + 1
+	ir.HasNextPage = has_next_page
+	ir.PrevPage = pagen - 1
+	ir.HasPrevPage = has_prev_page
 	tmpl := getTemplate("index.html")
 	tmpl.Execute(w, ir)
 }

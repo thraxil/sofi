@@ -7,4 +7,16 @@
     </a>
 </div>
 {{ end }}
+
+{{ if .HasPrevPage }}
+<div class="pagination">
+    <a href="/?page={{.PrevPage}}">Prev</a>
+</div>
+{{ end }}
+{{.Page}} / {{.TotalPages}}
+{{ if .HasNextPage }}
+<div class="pagination">
+    <a href="/?page={{.NextPage}}">Next</a>
+</div>
+{{ end }}
 {{ end }}

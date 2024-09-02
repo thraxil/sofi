@@ -1,7 +1,6 @@
 package main // import "github.com/thraxil/sofi
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -24,10 +23,6 @@ func main() {
 		log.Fatalln(err)
 	}
 	s := newSite(db, baseUrl)
-
-	fmt.Println(count_images(db))
-	fmt.Println(random_image(db))
-	fmt.Println(newest_images(db, 1))
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/image/{id}", makeHandler(imageHandler, s))
