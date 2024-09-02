@@ -25,9 +25,11 @@ func main() {
 	s := newSite(db, baseUrl)
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/image/{id}", makeHandler(imageHandler, s))
 	mux.HandleFunc("/", makeHandler(indexHandler, s))
+	mux.HandleFunc("/image/{id}", makeHandler(imageHandler, s))
 	mux.HandleFunc("/random", makeHandler(randomHandler, s))
+	mux.HandleFunc("/tag", makeHandler(tagIndexHandler, s))
+	mux.HandleFunc("/tag/{tag}", makeHandler(tagHandler, s))
 	mux.HandleFunc("/favicon.ico", faviconHandler)
 	http.ListenAndServe(":"+port, mux)
 }

@@ -47,3 +47,9 @@ func get_image_by_id(db *sqlx.DB, id int) Image {
 	db.Get(&image, "SELECT * FROM images WHERE id=$1", id)
 	return image
 }
+
+func getAllTags(db *sqlx.DB) []Tag {
+	tags := []Tag{}
+	db.Select(&tags, "SELECT * FROM tags order by lower(tag)")
+	return tags
+}

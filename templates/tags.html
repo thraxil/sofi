@@ -1,0 +1,6 @@
+{{ define "title" }}Pixelvore{{ end }}
+{{ define "content" }}
+{{ range .Tags }}
+    <a href="/tag/{{.Slug}}">{{.Tag}}</a>
+{{ end }}
+{{ end }}

@@ -87,6 +87,21 @@ func imageHandler(w http.ResponseWriter, r *http.Request, s *site) {
 	tmpl.Execute(w, ir)
 }
 
+func tagHandler(w http.ResponseWriter, r *http.Request, s *site) {
+}
+
+type tagIndexResponse struct {
+	Tags []Tag
+}
+
+func tagIndexHandler(w http.ResponseWriter, r *http.Request, s *site) {
+	tir := tagIndexResponse{}
+	tags := getAllTags(s.DB)
+	tir.Tags = tags
+	tmpl := getTemplate("tags.html")
+	tmpl.Execute(w, tir)
+}
+
 func faviconHandler(w http.ResponseWriter, r *http.Request) {
 	// just ignore this crap
 }
