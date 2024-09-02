@@ -14,6 +14,10 @@ func main() {
 	if !exists {
 		port = "8080"
 	}
+	templateDir, exists = os.LookupEnv("SOFI_TEMPLATE_DIR")
+	if !exists {
+		templateDir = "templates"
+	}
 	var DB_URL string
 	if os.Getenv("DATABASE_URL") != "" {
 		DB_URL = os.Getenv("DATABASE_URL")
@@ -25,6 +29,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
 	s := newSite(db)
 
 	mux := http.NewServeMux()
