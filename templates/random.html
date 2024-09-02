@@ -1,0 +1,6 @@
+{{ define "title" }}Pixelvore Random Image{{ end }}
+{{ define "content" }}
+<div class="image">
+    <img src="https://d2f33fmhbh7cs9.cloudfront.net/image/{{.Image.AHash}}/1000w/{{.Image.Id}}{{.Image.Ext}}" width="1000" />
+</div>
+{{ end }}

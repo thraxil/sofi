@@ -2,7 +2,9 @@
 {{ define "content" }}
 {{ range .Images }}
 <div class="image">
-    <img src="https://d2f33fmhbh7cs9.cloudfront.net/image/{{.AHash}}/1000w/{{.Id}}{{.Ext}}" width="1000" />
+    <a href="/image/{{.Id}}">
+        <img src="https://d2f33fmhbh7cs9.cloudfront.net/image/{{.AHash}}/1000w/{{.Id}}{{.Ext}}" width="1000" />
+    </a>
 </div>
 {{ end }}
 {{ end }}
