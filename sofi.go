@@ -10,19 +10,22 @@ import (
 )
 
 func main() {
-	baseUrl, exists := os.LookupEnv("SOFI_BASE_URL")
-	if !exists {
-		baseUrl = "http://localhost:8080"
-	}
 	port, exists := os.LookupEnv("SOFI_PORT")
 	if !exists {
 		port = "8080"
 	}
-	db, err := sqlx.Connect("postgres", "user=postgres password=postgres dbname=melo_dev sslmode=disable")
+	var DB_URL string
+	if os.Getenv("DATABASE_URL") != "" {
+		DB_URL = os.Getenv("DATABASE_URL")
+	} else {
+		// local dev settings
+		DB_URL = "user=postgres password=postgres dbname=melo_dev sslmode=disable"
+	}
+	db, err := sqlx.Open("postgres", DB_URL)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	s := newSite(db, baseUrl)
+	s := newSite(db)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", makeHandler(indexHandler, s))

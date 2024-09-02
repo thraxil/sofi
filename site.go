@@ -6,13 +6,11 @@ import (
 
 type site struct {
 	DB            *sqlx.DB
-	BaseURL       string
 	ImagesPerPage int
 }
 
-func newSite(db *sqlx.DB, base string) *site {
+func newSite(db *sqlx.DB) *site {
 	return &site{
-		DB:      db,
-		BaseURL: base,
+		DB: db,
 	}
 }
