@@ -67,6 +67,7 @@ func randomHandler(w http.ResponseWriter, r *http.Request, s *site) {
 	rr := randomResponse{}
 	image := random_image(s.DB)
 	rr.Image = image
+	rr.Tags = get_image_tags(s.DB, image)
 	tmpl := getTemplate("random.html")
 	tmpl.Execute(w, rr)
 }
@@ -85,6 +86,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request, s *site) {
 	ir := randomResponse{}
 	image := get_image_by_id(s.DB, id)
 	ir.Image = image
+	ir.Tags = get_image_tags(s.DB, image)
 	tmpl := getTemplate("image.html")
 	tmpl.Execute(w, ir)
 }

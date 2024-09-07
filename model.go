@@ -65,3 +65,9 @@ func get_images_by_tag(db *sqlx.DB, tag Tag) []Image {
 	db.Select(&images, "SELECT images.* FROM images JOIN image_tags ON images.id=image_tags.image_id WHERE image_tags.tag_id=$1", tag.Id)
 	return images
 }
+
+func get_image_tags(db *sqlx.DB, image Image) []Tag {
+	tags := []Tag{}
+	db.Select(&tags, "SELECT tags.* FROM tags JOIN image_tags ON tags.id=image_tags.tag_id WHERE image_tags.image_id=$1", image.Id)
+	return tags
+}
