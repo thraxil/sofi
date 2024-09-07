@@ -33,27 +33,27 @@ func indexHandler(w http.ResponseWriter, r *http.Request, s *site) {
 		pagen = 1
 	}
 	ir := indexResponse{}
-	cnt_images := count_images(s.DB)
-	has_next_page := true
-	has_prev_page := true
+	cntImages := countImages(s.DB)
+	hasNextPage := true
+	hasPrevPage := true
 	if pagen < 1 {
 		pagen = 1
 	}
 	if pagen < 2 {
-		has_prev_page = false
+		hasPrevPage = false
 	}
-	if pagen > cnt_images/imagesPerPage {
-		pagen = cnt_images / imagesPerPage
-		has_next_page = false
+	if pagen > cntImages/imagesPerPage {
+		pagen = cntImages / imagesPerPage
+		hasNextPage = false
 	}
-	images := newest_images(s.DB, pagen)
+	images := newestImages(s.DB, pagen)
 	ir.Images = images
 	ir.Page = pagen
-	ir.TotalPages = cnt_images / imagesPerPage
+	ir.TotalPages = cntImages / imagesPerPage
 	ir.NextPage = pagen + 1
-	ir.HasNextPage = has_next_page
+	ir.HasNextPage = hasNextPage
 	ir.PrevPage = pagen - 1
-	ir.HasPrevPage = has_prev_page
+	ir.HasPrevPage = hasPrevPage
 	tmpl := getTemplate("index.html")
 	tmpl.Execute(w, ir)
 }
@@ -65,9 +65,9 @@ type randomResponse struct {
 
 func randomHandler(w http.ResponseWriter, r *http.Request, s *site) {
 	rr := randomResponse{}
-	image := random_image(s.DB)
+	image := randomImage(s.DB)
 	rr.Image = image
-	rr.Tags = get_image_tags(s.DB, image)
+	rr.Tags = getImageTags(s.DB, image)
 	tmpl := getTemplate("random.html")
 	tmpl.Execute(w, rr)
 }
@@ -84,9 +84,9 @@ func imageHandler(w http.ResponseWriter, r *http.Request, s *site) {
 		return
 	}
 	ir := randomResponse{}
-	image := get_image_by_id(s.DB, id)
+	image := getImageById(s.DB, id)
 	ir.Image = image
-	ir.Tags = get_image_tags(s.DB, image)
+	ir.Tags = getImageTags(s.DB, image)
 	tmpl := getTemplate("image.html")
 	tmpl.Execute(w, ir)
 }
@@ -99,9 +99,9 @@ type tagResponse struct {
 func tagHandler(w http.ResponseWriter, r *http.Request, s *site) {
 	slug := r.PathValue("tag")
 	tr := tagResponse{}
-	tag := get_tag_by_slug(s.DB, slug)
+	tag := getTagBySlug(s.DB, slug)
 	tr.Tag = tag
-	images := get_images_by_tag(s.DB, tag)
+	images := getImagesByTag(s.DB, tag)
 	tr.Images = images
 	tmpl := getTemplate("tag.html")
 	tmpl.Execute(w, tr)
@@ -126,7 +126,7 @@ type feedResponse struct {
 func feedHandler(w http.ResponseWriter, r *http.Request, s *site) {
 	pagen := 1
 	ir := feedResponse{}
-	images := newest_images(s.DB, pagen)
+	images := newestImages(s.DB, pagen)
 	ir.Images = images
 	var t = template.New("feed.html")
 	tmpl := template.Must(t.ParseFiles(filepath.Join(templateDir, "feed.html")))
