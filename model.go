@@ -32,42 +32,42 @@ func countImages(db *sqlx.DB) int {
 func newestImages(db *sqlx.DB, page int) []Image {
 	// page size is 20
 	images := []Image{}
-	db.Select(&images, "SELECT * FROM images ORDER BY id DESC LIMIT 20 OFFSET $1", (page-1)*20)
+	db.Select(&images, "SELECT id,url,ahash,ext,inserted_at,updated_at FROM images ORDER BY id DESC LIMIT 20 OFFSET $1", (page-1)*20)
 	return images
 }
 
 func randomImage(db *sqlx.DB) Image {
 	image := Image{}
-	db.Get(&image, "SELECT * FROM images ORDER BY RANDOM() LIMIT 1")
+	db.Get(&image, "SELECT id,url,ahash,ext,inserted_at,updated_at FROM images ORDER BY RANDOM() LIMIT 1")
 	return image
 }
 
 func getImageById(db *sqlx.DB, id int) Image {
 	image := Image{}
-	db.Get(&image, "SELECT * FROM images WHERE id=$1", id)
+	db.Get(&image, "SELECT id,url,ahash,ext,inserted_at,updated_at FROM images WHERE id=$1", id)
 	return image
 }
 
 func getAllTags(db *sqlx.DB) []Tag {
 	tags := []Tag{}
-	db.Select(&tags, "SELECT * FROM tags order by lower(tag)")
+	db.Select(&tags, "SELECT id,slug,tag,inserted_at,updated_at FROM tags order by lower(tag)")
 	return tags
 }
 
 func getTagBySlug(db *sqlx.DB, slug string) Tag {
 	tag := Tag{}
-	db.Get(&tag, "SELECT * FROM tags WHERE slug=$1", slug)
+	db.Get(&tag, "SELECT id,slug,tag,inserted_at,updated_at FROM tags WHERE slug=$1", slug)
 	return tag
 }
 
 func getImagesByTag(db *sqlx.DB, tag Tag) []Image {
 	images := []Image{}
-	db.Select(&images, "SELECT images.* FROM images JOIN image_tags ON images.id=image_tags.image_id WHERE image_tags.tag_id=$1", tag.Id)
+	db.Select(&images, "SELECT images.id,images.url,images.ahash,images.ext,images.inserted_at,images.updated_at FROM images JOIN image_tags ON images.id=image_tags.image_id WHERE image_tags.tag_id=$1", tag.Id)
 	return images
 }
 
 func getImageTags(db *sqlx.DB, image Image) []Tag {
 	tags := []Tag{}
-	db.Select(&tags, "SELECT tags.* FROM tags JOIN image_tags ON tags.id=image_tags.tag_id WHERE image_tags.image_id=$1", image.Id)
+	db.Select(&tags, "SELECT tags.id,tags.slug,tags.tag,tags.inserted_at,tags.updated_at FROM tags JOIN image_tags ON tags.id=image_tags.tag_id WHERE image_tags.image_id=$1", image.Id)
 	return tags
 }
