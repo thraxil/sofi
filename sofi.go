@@ -1,15 +1,24 @@
 package main // import "github.com/thraxil/sofi
 
 import (
+	"context"
+	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"sync"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
 
-func main() {
+func run(ctx context.Context, w io.Writer, args []string) error {
+	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt)
+	defer cancel()
+
 	port, exists := os.LookupEnv("SOFI_PORT")
 	if !exists {
 		port = "8080"
@@ -33,13 +42,33 @@ func main() {
 	s := newSite(db)
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", makeHandler(indexHandler, s))
-	mux.HandleFunc("/image/{id}", makeHandler(imageHandler, s))
-	mux.HandleFunc("/random", makeHandler(randomHandler, s))
-	mux.HandleFunc("/tag", makeHandler(tagIndexHandler, s))
-	mux.HandleFunc("/tag/{tag}", makeHandler(tagHandler, s))
-	mux.HandleFunc("/feeds/newest", makeHandler(feedHandler, s))
-	mux.HandleFunc("/smoketest/", makeHandler(healthzHandler, s))
-	mux.HandleFunc("/favicon.ico", faviconHandler)
-	http.ListenAndServe(":"+port, mux)
+	addRoutes(mux, s)
+	go func() {
+		log.Printf("starting server")
+		if err := http.ListenAndServe(":"+port, mux); err != nil && err != http.ErrServerClosed {
+			fmt.Fprintf(os.Stderr, "error listening and serving: %s\n", err)
+		}
+	}()
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		<-ctx.Done()
+		shutdownCtx := context.Background()
+		shutdownCtx, cancel := context.WithTimeout(shutdownCtx, 10*time.Second)
+		defer cancel()
+		// if err := httpServer.Shutdown(shutdownCtx); err != nil {
+		// 	fmt.Fprintf(os.Stderr, "error shutting down http server: %s\n", err)
+		// }
+	}()
+	wg.Wait()
+	return nil
+}
+
+func main() {
+	ctx := context.Background()
+	if err := run(ctx, os.Stdout, os.Args); err != nil {
+		fmt.Fprintf(os.Stderr, "%s\n", err)
+		os.Exit(1)
+	}
 }
